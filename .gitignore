@@ -46,3 +46,7 @@ app.*.map.json
 
 # iOS build cache
 ios/build/
+
+# Firebase config files (contain API keys)
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
