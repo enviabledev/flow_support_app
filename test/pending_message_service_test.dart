@@ -7,17 +7,21 @@ void main() {
 
   setUp(() {
     service = PendingMessageService.instance;
-    service.cancelMessage();
+    // Cancel all pending messages from previous tests
+    service.cancelMessage(conversationId: 'conv-1');
+    service.cancelMessage(conversationId: 'conv-2');
+    service.cancelMessage(conversationId: 'conv-3');
     service.onSend = null;
   });
 
   group('PendingMessageService', () {
     test('starts with no pending message', () {
       expect(service.hasPending, isFalse);
-      expect(service.pending, isNull);
+      expect(service.hasPendingFor('conv-1'), isFalse);
+      expect(service.pendingFor('conv-1'), isNull);
     });
 
-    test('queueMessage creates a pending message', () {
+    test('queueMessage creates a pending message for a conversation', () {
       fakeAsync((async) {
         service.queueMessage(
           conversationId: 'conv-1',
@@ -25,10 +29,13 @@ void main() {
         );
 
         expect(service.hasPending, isTrue);
-        expect(service.pending!.conversationId, 'conv-1');
-        expect(service.pending!.body, 'Hello world');
-        expect(service.pending!.remainingSeconds, 120);
-        expect(service.pending!.replyToId, isNull);
+        expect(service.hasPendingFor('conv-1'), isTrue);
+        expect(service.hasPendingFor('conv-2'), isFalse);
+        final p = service.pendingFor('conv-1')!;
+        expect(p.conversationId, 'conv-1');
+        expect(p.body, 'Hello world');
+        expect(p.remainingSeconds, 120);
+        expect(p.replyToId, isNull);
       });
     });
 
@@ -40,32 +47,32 @@ void main() {
           replyToId: 'msg-123',
         );
 
-        expect(service.pending!.replyToId, 'msg-123');
+        expect(service.pendingFor('conv-1')!.replyToId, 'msg-123');
       });
     });
 
-    test('editMessage updates the body', () {
+    test('editMessage updates the body for a conversation', () {
       fakeAsync((async) {
         service.queueMessage(conversationId: 'conv-1', body: 'Original');
-        service.editMessage('Edited');
+        service.editMessage('Edited', conversationId: 'conv-1');
 
-        expect(service.pending!.body, 'Edited');
+        expect(service.pendingFor('conv-1')!.body, 'Edited');
       });
     });
 
     test('editMessage does nothing when no pending', () {
-      service.editMessage('Should not crash');
+      service.editMessage('Should not crash', conversationId: 'conv-1');
       expect(service.hasPending, isFalse);
     });
 
-    test('cancelMessage clears the pending message', () {
+    test('cancelMessage clears the pending message for a conversation', () {
       fakeAsync((async) {
         service.queueMessage(conversationId: 'conv-1', body: 'Hello');
-        expect(service.hasPending, isTrue);
+        expect(service.hasPendingFor('conv-1'), isTrue);
 
-        service.cancelMessage();
+        service.cancelMessage(conversationId: 'conv-1');
+        expect(service.hasPendingFor('conv-1'), isFalse);
         expect(service.hasPending, isFalse);
-        expect(service.pending, isNull);
       });
     });
 
@@ -87,35 +94,35 @@ void main() {
           replyToId: 'reply-1',
         );
 
-        service.sendNow();
+        service.sendNow(conversationId: 'conv-1');
 
-        expect(service.hasPending, isFalse);
+        expect(service.hasPendingFor('conv-1'), isFalse);
         expect(sentConvId, 'conv-1');
         expect(sentBody, 'Immediate send');
         expect(sentReplyToId, 'reply-1');
       });
     });
 
-    test('sendNow does nothing when no pending', () {
+    test('sendNow does nothing when no pending for that conversation', () {
       bool called = false;
       service.onSend = (_, __, ___) {
         called = true;
       };
 
-      service.sendNow();
+      service.sendNow(conversationId: 'conv-1');
       expect(called, isFalse);
     });
 
     test('timer counts down each second', () {
       fakeAsync((async) {
         service.queueMessage(conversationId: 'conv-1', body: 'Test');
-        expect(service.pending!.remainingSeconds, 120);
+        expect(service.pendingFor('conv-1')!.remainingSeconds, 120);
 
         async.elapse(const Duration(seconds: 5));
-        expect(service.pending!.remainingSeconds, 115);
+        expect(service.pendingFor('conv-1')!.remainingSeconds, 115);
 
         async.elapse(const Duration(seconds: 10));
-        expect(service.pending!.remainingSeconds, 105);
+        expect(service.pendingFor('conv-1')!.remainingSeconds, 105);
       });
     });
 
@@ -129,7 +136,7 @@ void main() {
         service.queueMessage(conversationId: 'conv-1', body: 'Auto send');
         async.elapse(const Duration(seconds: 120));
 
-        expect(service.hasPending, isFalse);
+        expect(service.hasPendingFor('conv-1'), isFalse);
         expect(sentBody, 'Auto send');
       });
     });
@@ -143,7 +150,7 @@ void main() {
 
         service.queueMessage(conversationId: 'conv-1', body: 'Cancelled');
         async.elapse(const Duration(seconds: 10));
-        service.cancelMessage();
+        service.cancelMessage(conversationId: 'conv-1');
         async.elapse(const Duration(seconds: 200));
 
         expect(called, isFalse);
@@ -151,33 +158,100 @@ void main() {
       });
     });
 
-    test('queueMessage replaces existing pending with fresh timer', () {
-      fakeAsync((async) {
-        service.queueMessage(conversationId: 'conv-1', body: 'First');
-        async.elapse(const Duration(seconds: 60));
-        expect(service.pending!.remainingSeconds, 60);
+    // === CONVERSATION INDEPENDENCE TESTS ===
 
-        service.queueMessage(conversationId: 'conv-2', body: 'Second');
-        expect(service.pending!.body, 'Second');
-        expect(service.pending!.conversationId, 'conv-2');
-        expect(service.pending!.remainingSeconds, 120);
+    test('two conversations can have independent pending messages', () {
+      fakeAsync((async) {
+        service.queueMessage(conversationId: 'conv-1', body: 'Message A');
+        service.queueMessage(conversationId: 'conv-2', body: 'Message B');
+
+        expect(service.hasPendingFor('conv-1'), isTrue);
+        expect(service.hasPendingFor('conv-2'), isTrue);
+        expect(service.pendingFor('conv-1')!.body, 'Message A');
+        expect(service.pendingFor('conv-2')!.body, 'Message B');
       });
     });
 
-    test('old pending does not auto-send after being replaced', () {
+    test('cancelling one conversation does not affect another', () {
       fakeAsync((async) {
-        int sendCount = 0;
-        service.onSend = (_, __, ___) {
-          sendCount++;
+        service.queueMessage(conversationId: 'conv-1', body: 'Message A');
+        service.queueMessage(conversationId: 'conv-2', body: 'Message B');
+
+        service.cancelMessage(conversationId: 'conv-1');
+
+        expect(service.hasPendingFor('conv-1'), isFalse);
+        expect(service.hasPendingFor('conv-2'), isTrue);
+        expect(service.pendingFor('conv-2')!.body, 'Message B');
+      });
+    });
+
+    test('sendNow on one conversation does not affect another', () {
+      fakeAsync((async) {
+        final sent = <String>[];
+        service.onSend = (convId, body, _) {
+          sent.add('$convId:$body');
         };
 
-        service.queueMessage(conversationId: 'conv-1', body: 'First');
+        service.queueMessage(conversationId: 'conv-1', body: 'A');
+        service.queueMessage(conversationId: 'conv-2', body: 'B');
+
+        service.sendNow(conversationId: 'conv-1');
+
+        expect(sent, ['conv-1:A']);
+        expect(service.hasPendingFor('conv-1'), isFalse);
+        expect(service.hasPendingFor('conv-2'), isTrue);
+      });
+    });
+
+    test('timers run independently per conversation', () {
+      fakeAsync((async) {
+        service.queueMessage(conversationId: 'conv-1', body: 'A');
+        async.elapse(const Duration(seconds: 30));
+
+        service.queueMessage(conversationId: 'conv-2', body: 'B');
+        async.elapse(const Duration(seconds: 30));
+
+        // conv-1: 120 - 60 = 60 remaining
+        // conv-2: 120 - 30 = 90 remaining
+        expect(service.pendingFor('conv-1')!.remainingSeconds, 60);
+        expect(service.pendingFor('conv-2')!.remainingSeconds, 90);
+      });
+    });
+
+    test('each conversation auto-dispatches independently', () {
+      fakeAsync((async) {
+        final sent = <String>[];
+        service.onSend = (convId, body, _) {
+          sent.add('$convId:$body');
+        };
+
+        service.queueMessage(conversationId: 'conv-1', body: 'A');
         async.elapse(const Duration(seconds: 60));
+        service.queueMessage(conversationId: 'conv-2', body: 'B');
 
-        service.queueMessage(conversationId: 'conv-2', body: 'Second');
-        async.elapse(const Duration(seconds: 120));
+        // conv-1 has 60s left, conv-2 has 120s
+        async.elapse(const Duration(seconds: 60));
+        // conv-1 should have auto-dispatched
+        expect(sent, ['conv-1:A']);
+        expect(service.hasPendingFor('conv-1'), isFalse);
+        expect(service.hasPendingFor('conv-2'), isTrue);
 
-        expect(sendCount, 1);
+        async.elapse(const Duration(seconds: 60));
+        // conv-2 should have auto-dispatched
+        expect(sent, ['conv-1:A', 'conv-2:B']);
+        expect(service.hasPending, isFalse);
+      });
+    });
+
+    test('editing one conversation does not affect another', () {
+      fakeAsync((async) {
+        service.queueMessage(conversationId: 'conv-1', body: 'Original A');
+        service.queueMessage(conversationId: 'conv-2', body: 'Original B');
+
+        service.editMessage('Edited A', conversationId: 'conv-1');
+
+        expect(service.pendingFor('conv-1')!.body, 'Edited A');
+        expect(service.pendingFor('conv-2')!.body, 'Original B');
       });
     });
 
@@ -190,16 +264,16 @@ void main() {
         service.queueMessage(conversationId: 'conv-1', body: 'Test');
         expect(notifyCount, 1);
 
-        service.editMessage('New body');
+        service.editMessage('New body', conversationId: 'conv-1');
         expect(notifyCount, 2);
 
-        service.cancelMessage();
+        service.cancelMessage(conversationId: 'conv-1');
         expect(notifyCount, 3);
 
         service.queueMessage(conversationId: 'conv-1', body: 'Test2');
         notifyCount = 0;
         service.onSend = (_, __, ___) {};
-        service.sendNow();
+        service.sendNow(conversationId: 'conv-1');
         expect(notifyCount, 1);
 
         service.removeListener(listener);
@@ -219,7 +293,7 @@ void main() {
         expect(notifyCount, 3);
 
         service.removeListener(listener);
-        service.cancelMessage();
+        service.cancelMessage(conversationId: 'conv-1');
       });
     });
   });

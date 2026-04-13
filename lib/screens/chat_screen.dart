@@ -94,6 +94,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       if (e.response?.statusCode == 400 &&
           e.response?.data is Map &&
           e.response?.data['windowExpired'] == true) {
+        // Update conversation list to show undelivered status
+        ref.read(conversationsProvider.notifier).updateLastMessage(conversationId, body, status: 'undelivered');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Message not sent. Customer needs to message you first.'),
@@ -139,6 +141,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final status = map['status'] as String?;
     if (messageId != null && status != null) {
       ref.read(messagesProvider(widget.conversationId).notifier).updateMessageStatus(messageId, status);
+      // Update conversation list preview status
+      ref.read(conversationsProvider.notifier).updateLastMessageStatus(widget.conversationId, status);
     }
   }
 
@@ -166,8 +170,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     if (text.isEmpty) return;
 
     // Block if a message is pending in THIS conversation
-    final pending = PendingMessageService.instance.pending;
-    if (pending != null && pending.conversationId == widget.conversationId) return;
+    if (PendingMessageService.instance.hasPendingFor(widget.conversationId)) return;
 
     _typingTimer?.cancel();
     if (_isTyping) {
@@ -381,7 +384,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             onPressed: () {
               final newBody = controller.text.trim();
               if (newBody.isNotEmpty) {
-                PendingMessageService.instance.editMessage(newBody);
+                PendingMessageService.instance.editMessage(newBody, conversationId: widget.conversationId);
               }
               Navigator.pop(ctx);
             },
@@ -457,7 +460,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       ),
                       const SizedBox(width: 8),
                       GestureDetector(
-                        onTap: () => PendingMessageService.instance.sendNow(),
+                        onTap: () => PendingMessageService.instance.sendNow(conversationId: widget.conversationId),
                         child: const Text(
                           'Send now',
                           style: TextStyle(
@@ -502,7 +505,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   const SizedBox(width: 6),
                   // Delete
                   GestureDetector(
-                    onTap: () => PendingMessageService.instance.cancelMessage(),
+                    onTap: () => PendingMessageService.instance.cancelMessage(conversationId: widget.conversationId),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
@@ -600,8 +603,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final contactName = conversation?.contact.nameOrPhone ?? 'Chat';
 
     final pendingService = PendingMessageService.instance;
-    final pending = pendingService.pending;
-    final hasPendingHere = pending != null && pending.conversationId == widget.conversationId;
+    final pending = pendingService.pendingFor(widget.conversationId);
+    final hasPendingHere = pending != null;
 
     return Scaffold(
       backgroundColor: ThemeProvider.instance.colors.chatBackground,
@@ -619,14 +622,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(contactName,
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: ThemeProvider.instance.colors.textPrimary),
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: context.isDarkMode ? ThemeProvider.instance.colors.textPrimary : Colors.white),
                       overflow: TextOverflow.ellipsis),
                     Consumer(builder: (_, ref, __) {
                       final typing = ref.watch(typingProvider);
                       final typingName = typing[widget.conversationId];
                       return Text(
                         typingName != null ? '$typingName is typing...' : 'online',
-                        style: TextStyle(fontSize: 12, color: typingName != null ? AppColors.accent : ThemeProvider.instance.colors.textSecondary),
+                        style: TextStyle(fontSize: 12, color: typingName != null ? (context.isDarkMode ? AppColors.accent : Colors.white) : (context.isDarkMode ? ThemeProvider.instance.colors.textSecondary : Colors.white70)),
                       );
                     }),
                   ],
@@ -640,8 +643,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             icon: Icon(
               conversation != null && conversation.isStarred ? Icons.star : Icons.star_border,
               color: conversation != null && conversation.isStarred
-                  ? const Color(0xFFF5C543)
-                  : ThemeProvider.instance.colors.textSecondary,
+                  ? AppColors.accent
+                  : (context.isDarkMode ? ThemeProvider.instance.colors.textSecondary : Colors.white70),
             ),
             onPressed: () {
               if (conversation == null) return;
@@ -765,7 +768,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ],
             ),
           ),
-          if (_replyingTo != null && !pendingService.hasPending)
+          if (_replyingTo != null && !hasPendingHere)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               color: ThemeProvider.instance.colors.surface,
@@ -808,7 +811,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               },
               showEmojiPicker: _showEmojiPicker,
             ),
-          if (_showEmojiPicker && !pendingService.hasPending) EmojiPickerOverlay(controller: _textController),
+          if (_showEmojiPicker && !hasPendingHere) EmojiPickerOverlay(controller: _textController),
         ],
       ),
     );

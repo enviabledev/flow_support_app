@@ -108,7 +108,7 @@ class ConversationsNotifier extends StateNotifier<ConversationsState> {
     state = state.copyWith(conversations: updated);
   }
 
-  void updateLastMessage(String conversationId, String text) {
+  void updateLastMessage(String conversationId, String text, {String? status}) {
     final index = state.conversations.indexWhere((c) => c.id == conversationId);
     if (index < 0) return;
     final updated = List<Conversation>.from(state.conversations);
@@ -116,8 +116,17 @@ class ConversationsNotifier extends StateNotifier<ConversationsState> {
       lastMessageText: text,
       lastMessageAt: DateTime.now(),
       lastMessageDirection: 'outbound',
+      lastMessageStatus: status ?? 'sent',
     );
     _sortConversations(updated);
+    state = state.copyWith(conversations: updated);
+  }
+
+  void updateLastMessageStatus(String conversationId, String status) {
+    final index = state.conversations.indexWhere((c) => c.id == conversationId);
+    if (index < 0) return;
+    final updated = List<Conversation>.from(state.conversations);
+    updated[index] = updated[index].copyWith(lastMessageStatus: status);
     state = state.copyWith(conversations: updated);
   }
 

@@ -32,6 +32,24 @@ class ChatListItem extends StatelessWidget {
     return TimeFormatter.formatConversationTime(dateTime);
   }
 
+  Widget _buildStatusIcon(String? status) {
+    switch (status) {
+      case 'queued':
+        return const Icon(Icons.access_time, size: 16, color: AppColors.tickGrey);
+      case 'sent':
+        return const Icon(Icons.check, size: 16, color: AppColors.tickGrey);
+      case 'delivered':
+        return const Icon(Icons.done_all, size: 16, color: AppColors.tickGrey);
+      case 'read':
+        return const Icon(Icons.done_all, size: 16, color: AppColors.tickBlue);
+      case 'failed':
+      case 'undelivered':
+        return const Icon(Icons.error, size: 16, color: AppColors.danger);
+      default:
+        return const Icon(Icons.check, size: 16, color: AppColors.tickGrey);
+    }
+  }
+
   String _cleanPreview(String text) {
     // Strip WhatsApp markdown quote prefix to show only the reply text
     if (text.startsWith('> _"')) {
@@ -98,7 +116,7 @@ class ChatListItem extends StatelessWidget {
                       if (conversation.isStarred)
                         const Padding(
                           padding: EdgeInsets.only(right: 4),
-                          child: Icon(Icons.star, color: Color(0xFFF5C543), size: 14),
+                          child: Icon(Icons.star, color: AppColors.accent, size: 14),
                         ),
                       Text(
                         _formatTime(conversation.lastMessageAt),
@@ -112,9 +130,9 @@ class ChatListItem extends StatelessWidget {
                   Row(
                     children: [
                       if (!isTyping && conversation.isLastMessageOutgoing)
-                        const Padding(
-                          padding: EdgeInsets.only(right: 4),
-                          child: Icon(Icons.done_all, size: 16, color: AppColors.tickGrey),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: _buildStatusIcon(conversation.lastMessageStatus),
                         ),
                       Expanded(
                         child: isTyping

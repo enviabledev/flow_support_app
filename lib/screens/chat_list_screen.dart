@@ -82,18 +82,16 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
     }
   }
 
-  Future<void> _toggleStar(Conversation conversation) async {
-    try {
-      if (conversation.isStarred) {
-        await ApiService().unstarConversation(conversation.id);
-      } else {
-        await ApiService().starConversation(conversation.id);
-      }
-      ref.read(conversationsProvider.notifier).updateStarred(
-        conversation.id,
-        !conversation.isStarred,
-      );
-    } catch (_) {}
+  void _toggleStar(Conversation conversation) {
+    final newStarred = !conversation.isStarred;
+    // Update locally first for instant UI feedback
+    ref.read(conversationsProvider.notifier).updateStarred(conversation.id, newStarred);
+    // Then sync to server in background
+    if (newStarred) {
+      ApiService().starConversation(conversation.id);
+    } else {
+      ApiService().unstarConversation(conversation.id);
+    }
   }
 
   void _showConversationActions(Conversation conversation) {
@@ -111,7 +109,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
             ListTile(
               leading: Icon(
                 conversation.isStarred ? Icons.star_border : Icons.star,
-                color: const Color(0xFFF5C543),
+                color: AppColors.accent,
               ),
               title: Text(
                 conversation.isStarred ? 'Unstar' : 'Star',
@@ -126,12 +124,12 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
               ListTile(
                 leading: const Icon(Icons.markunread, color: AppColors.accent),
                 title: Text('Mark as unread', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
-                onTap: () async {
+                onTap: () {
                   Navigator.pop(ctx);
-                  try {
-                    await ApiService().updateConversation(conversation.id, {'unread_count': 1});
-                    ref.read(conversationsProvider.notifier).updateUnread(conversation.id, 1);
-                  } catch (_) {}
+                  // Update locally first for instant UI feedback
+                  ref.read(conversationsProvider.notifier).updateUnread(conversation.id, 1);
+                  // Then sync to server in background
+                  ApiService().updateConversation(conversation.id, {'unread_count': 1});
                 },
               ),
             ListTile(
@@ -173,12 +171,12 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
           : _isSelectionMode
               ? AppBar(
                   leading: IconButton(
-                    icon: Icon(Icons.close, color: ThemeProvider.instance.colors.textPrimary),
+                    icon: const Icon(Icons.close),
                     onPressed: _exitSelectionMode,
                   ),
                   title: Text(
                     '${_selectedConversations.length} selected',
-                    style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   ),
                   actions: [
                     IconButton(
@@ -201,7 +199,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                   title: const Text('Flow Support'),
                   actions: [
                     IconButton(
-                      icon: Icon(Icons.campaign_outlined, color: ThemeProvider.instance.colors.textSecondary),
+                      icon: const Icon(Icons.campaign_outlined),
                       tooltip: 'Broadcast message',
                       onPressed: () {
                         Navigator.push(
@@ -315,7 +313,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                                       padding: const EdgeInsets.only(right: 24),
                                       color: conv.isStarred
                                           ? ThemeProvider.instance.colors.textSecondary
-                                          : const Color(0xFFF5C543),
+                                          : AppColors.accent,
                                       child: Icon(
                                         conv.isStarred ? Icons.star_border : Icons.star,
                                         color: Colors.white,

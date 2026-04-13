@@ -15,13 +15,20 @@ class DateSeparator extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: ThemeProvider.instance.colors.headerBackground,
+            color: context.isDarkMode
+                ? ThemeProvider.instance.colors.headerBackground
+                : Colors.white.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(8),
+            boxShadow: context.isDarkMode
+                ? null
+                : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 2)],
           ),
           child: Text(
             TimeFormatter.formatDateSeparator(date),
             style: TextStyle(
-              color: ThemeProvider.instance.colors.textSecondary,
+              color: context.isDarkMode
+                  ? ThemeProvider.instance.colors.textSecondary
+                  : const Color(0xFF667781),
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),

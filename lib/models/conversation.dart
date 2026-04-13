@@ -7,6 +7,7 @@ class Conversation {
   final String? assignedTo;
   final String? lastMessageText;
   final String? lastMessageDirection;
+  final String? lastMessageStatus;
   final String? lastMessageSenderName;
   final DateTime? lastMessageAt;
   final DateTime? lastInboundAt;
@@ -20,6 +21,7 @@ class Conversation {
     this.assignedTo,
     this.lastMessageText,
     this.lastMessageDirection,
+    this.lastMessageStatus,
     this.lastMessageSenderName,
     this.lastMessageAt,
     this.lastInboundAt,
@@ -49,6 +51,7 @@ class Conversation {
       assignedTo: json['assignedTo']?.toString() ?? json['assigned_to']?.toString(),
       lastMessageText: json['lastMessageText'] as String? ?? json['last_message_text'] as String?,
       lastMessageDirection: json['lastMessageDirection'] as String? ?? json['last_message_direction'] as String?,
+      lastMessageStatus: json['lastMessageStatus'] as String? ?? json['last_message_status'] as String?,
       lastMessageSenderName: json['lastMessageSenderName'] as String? ?? json['last_message_sender_name'] as String?,
       lastMessageAt: _parseNullableUtc(json['lastMessageAt'] ?? json['last_message_at']),
       lastInboundAt: _parseNullableUtc(json['lastInboundAt'] ?? json['last_inbound_at']),
@@ -64,6 +67,7 @@ class Conversation {
         'assignedTo': assignedTo,
         'lastMessageText': lastMessageText,
         'lastMessageDirection': lastMessageDirection,
+        'lastMessageStatus': lastMessageStatus,
         'lastMessageSenderName': lastMessageSenderName,
         'lastMessageAt': lastMessageAt?.toIso8601String(),
         'lastInboundAt': lastInboundAt?.toIso8601String(),
@@ -77,6 +81,7 @@ class Conversation {
   Conversation copyWith({
     String? lastMessageText,
     String? lastMessageDirection,
+    String? lastMessageStatus,
     String? lastMessageSenderName,
     DateTime? lastMessageAt,
     DateTime? lastInboundAt,
@@ -91,6 +96,7 @@ class Conversation {
       assignedTo: assignedTo ?? this.assignedTo,
       lastMessageText: lastMessageText ?? this.lastMessageText,
       lastMessageDirection: lastMessageDirection ?? this.lastMessageDirection,
+      lastMessageStatus: lastMessageStatus ?? this.lastMessageStatus,
       lastMessageSenderName: lastMessageSenderName ?? this.lastMessageSenderName,
       lastMessageAt: lastMessageAt ?? this.lastMessageAt,
       lastInboundAt: lastInboundAt ?? this.lastInboundAt,
