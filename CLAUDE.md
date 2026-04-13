@@ -62,23 +62,21 @@ lib/
 ```
 
 ## Server
-- API: `http://52.208.133.222` (AWS EC2)
-- SSH: `ssh -i ~/.ssh/enviable-key.pem ec2-user@52.208.133.222`
-- Docker Compose at `~/enviable-whatsapp/`
+- AWS EC2 instance running Docker Compose
+- SSH key at `~/.ssh/enviable-key.pem`
+- Docker Compose at `~/enviable-whatsapp/` on server
 - Restart: `docker-compose restart api`
 - Logs: `docker-compose logs --tail=50 api`
-- DB: `docker-compose exec -T db psql -U enviable_admin -d enviable_whatsapp`
+- Server IP, DB credentials, and webhook URLs are in the Terraform outputs / .env (not committed)
 
 ## Build & Deploy
 - APK: `flutter build apk --release`
 - IPA: `flutter build ipa --release`
-- Firebase distribution: `firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --project enviable-whatsapp --app 1:194728842921:android:60b8cdf4ba28658c7abbb8 --groups internal-testers --release-notes "..."`
+- Firebase distribution: use `firebase appdistribution:distribute` with `--groups internal-testers`
 - IPA via Transporter app to TestFlight
 - Don't auto-build — wait for explicit instruction
 - Always run `flutter test` before building
-- Firebase project: `enviable-whatsapp`
-- Android app ID: `1:194728842921:android:60b8cdf4ba28658c7abbb8`
-- iOS app ID: `1:194728842921:ios:42930edd4c114ea37abbb8`
+- Firebase project and app IDs are in `google-services.json` / `GoogleService-Info.plist` (gitignored)
 - Testers group: `internal-testers` (always include)
 
 ## Testing
