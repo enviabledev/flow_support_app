@@ -26,6 +26,7 @@ import '../widgets/date_separator.dart';
 import '../widgets/input_bar.dart';
 import '../widgets/emoji_picker_overlay.dart';
 import '../widgets/attachment_picker.dart';
+import '../widgets/chat_wallpaper.dart';
 import '../widgets/swipeable_message.dart';
 import 'media_preview_screen.dart';
 import 'broadcast_screen.dart';
@@ -65,8 +66,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       if (mounted) setState(() {});
     };
 
-    // Wire up PendingMessageService's onSend callback
-    PendingMessageService.instance.onSend ??= _handlePendingSend;
+    // Always update the onSend callback to use the current screen's ref
+    PendingMessageService.instance.onSend = _handlePendingSend;
     PendingMessageService.instance.addListener(_boundPendingListener);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -164,8 +165,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final text = _textController.text.trim();
     if (text.isEmpty) return;
 
-    // Block if a message is already pending
-    if (PendingMessageService.instance.hasPending) return;
+    // Block if a message is pending in THIS conversation
+    final pending = PendingMessageService.instance.pending;
+    if (pending != null && pending.conversationId == widget.conversationId) return;
 
     _typingTimer?.cancel();
     if (_isTyping) {
@@ -351,17 +353,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        title: const Text('Edit message', style: TextStyle(color: AppColors.textPrimary, fontSize: 18)),
+        backgroundColor: ThemeProvider.instance.colors.surface,
+        title: Text('Edit message', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 18)),
         content: TextField(
           controller: controller,
           autofocus: true,
           maxLines: 5,
           minLines: 1,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+          style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 15),
           decoration: InputDecoration(
             filled: true,
-            fillColor: AppColors.inputBackground,
+            fillColor: ThemeProvider.instance.colors.inputBackground,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -372,7 +374,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text('Cancel', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.accent),
@@ -414,7 +416,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
               decoration: BoxDecoration(
-                color: AppColors.outgoingBubble,
+                color: ThemeProvider.instance.colors.outgoingBubble,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.accent.withValues(alpha: 0.5), width: 1),
               ),
@@ -423,7 +425,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 children: [
                   Text(
                     displayBody,
-                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
+                    style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 16),
                   ),
                   const SizedBox(height: 6),
                   // Timer + send now row
@@ -484,7 +486,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: AppColors.inputBackground,
+                        color: ThemeProvider.instance.colors.inputBackground,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Row(
@@ -529,15 +531,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: AppColors.inputBackground,
+                        color: ThemeProvider.instance.colors.inputBackground,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.copy, color: AppColors.textSecondary, size: 14),
+                          Icon(Icons.copy, color: ThemeProvider.instance.colors.textSecondary, size: 14),
                           SizedBox(width: 4),
-                          Text('Copy', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                          Text('Copy', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 12)),
                         ],
                       ),
                     ),
@@ -551,26 +553,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-  Widget _buildBlockedInputBar({required bool isOtherConversation}) {
+  Widget _buildBlockedInputBar() {
     return SafeArea(
       top: false,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        color: AppColors.background,
+        color: ThemeProvider.instance.colors.background,
         child: Row(
           children: [
-            Icon(
-              isOtherConversation ? Icons.info_outline : Icons.timer,
-              color: AppColors.textSecondary,
-              size: 18,
-            ),
-            const SizedBox(width: 8),
+            Icon(Icons.timer, color: ThemeProvider.instance.colors.textSecondary, size: 18),
+            SizedBox(width: 8),
             Expanded(
               child: Text(
-                isOtherConversation
-                    ? 'Pending message in another conversation. Wait or cancel it first.'
-                    : 'Message queued. Edit, delete, or wait to send.',
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                'Message queued. Edit, delete, or wait to send.',
+                style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 13),
               ),
             ),
           ],
@@ -606,12 +602,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final pendingService = PendingMessageService.instance;
     final pending = pendingService.pending;
     final hasPendingHere = pending != null && pending.conversationId == widget.conversationId;
-    final hasPendingElsewhere = pending != null && pending.conversationId != widget.conversationId;
 
     return Scaffold(
-      backgroundColor: AppColors.chatBackground,
+      backgroundColor: ThemeProvider.instance.colors.chatBackground,
       appBar: AppBar(
-        backgroundColor: AppColors.headerBackground,
+        backgroundColor: ThemeProvider.instance.colors.headerBackground,
         leadingWidth: 32,
         title: GestureDetector(
           onTap: () => context.push('/chats/${widget.conversationId}/contact'),
@@ -624,14 +619,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(contactName,
-                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: ThemeProvider.instance.colors.textPrimary),
                       overflow: TextOverflow.ellipsis),
                     Consumer(builder: (_, ref, __) {
                       final typing = ref.watch(typingProvider);
                       final typingName = typing[widget.conversationId];
                       return Text(
                         typingName != null ? '$typingName is typing...' : 'online',
-                        style: TextStyle(fontSize: 12, color: typingName != null ? AppColors.accent : AppColors.textSecondary),
+                        style: TextStyle(fontSize: 12, color: typingName != null ? AppColors.accent : ThemeProvider.instance.colors.textSecondary),
                       );
                     }),
                   ],
@@ -646,7 +641,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               conversation != null && conversation.isStarred ? Icons.star : Icons.star_border,
               color: conversation != null && conversation.isStarred
                   ? const Color(0xFFF5C543)
-                  : AppColors.textSecondary,
+                  : ThemeProvider.instance.colors.textSecondary,
             ),
             onPressed: () {
               if (conversation == null) return;
@@ -661,7 +656,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
-            color: AppColors.surface,
+            color: ThemeProvider.instance.colors.surface,
             itemBuilder: (_) => [const PopupMenuItem(value: 'contact', child: Text('Contact info'))],
             onSelected: (v) { if (v == 'contact') context.push('/chats/${widget.conversationId}/contact'); },
           ),
@@ -691,6 +686,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Expanded(
             child: Stack(
               children: [
+                const ChatWallpaper(),
                 msgState.isLoading && msgState.messages.isEmpty
                     ? const Center(child: CircularProgressIndicator(color: AppColors.accent))
                     : NotificationListener<ScrollNotification>(
@@ -761,9 +757,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   Positioned(
                     bottom: 8, right: 16,
                     child: FloatingActionButton.small(
-                      backgroundColor: AppColors.surface,
+                      backgroundColor: ThemeProvider.instance.colors.surface,
                       onPressed: _scrollToBottom,
-                      child: const Icon(Icons.keyboard_arrow_down, color: AppColors.textSecondary),
+                      child: Icon(Icons.keyboard_arrow_down, color: ThemeProvider.instance.colors.textSecondary),
                     ),
                   ),
               ],
@@ -772,7 +768,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           if (_replyingTo != null && !pendingService.hasPending)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              color: AppColors.surface,
+              color: ThemeProvider.instance.colors.surface,
               child: Row(
                 children: [
                   Container(width: 4, height: 40, decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(2))),
@@ -785,21 +781,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         Text(_replyingTo!.senderType == 'contact' ? contactName : 'You',
                           style: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600, fontSize: 13)),
                         Text(_replyingTo!.body ?? '[Media]',
-                          style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                          style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 13),
                           maxLines: 1, overflow: TextOverflow.ellipsis),
                       ],
                     ),
                   ),
-                  IconButton(icon: const Icon(Icons.close, color: AppColors.textSecondary, size: 20), onPressed: _clearReply,
+                  IconButton(icon: Icon(Icons.close, color: ThemeProvider.instance.colors.textSecondary, size: 20), onPressed: _clearReply,
                     padding: EdgeInsets.zero, constraints: const BoxConstraints()),
                 ],
               ),
             ),
-          // Input bar or blocked state
+          // Input bar — only blocked in the conversation with the pending message
           if (hasPendingHere)
-            _buildBlockedInputBar(isOtherConversation: false)
-          else if (hasPendingElsewhere)
-            _buildBlockedInputBar(isOtherConversation: true)
+            _buildBlockedInputBar()
           else
             InputBar(
               controller: _textController,

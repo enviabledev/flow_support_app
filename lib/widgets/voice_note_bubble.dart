@@ -115,7 +115,7 @@ class _VoiceNoteBubbleState extends State<VoiceNoteBubble> {
                     trackHeight: 3,
                     thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
                     activeTrackColor: AppColors.accent,
-                    inactiveTrackColor: AppColors.textSecondary.withValues(alpha: 0.3),
+                    inactiveTrackColor: ThemeProvider.instance.colors.textSecondary.withValues(alpha: 0.3),
                     thumbColor: AppColors.accent,
                     overlayShape: SliderComponentShape.noOverlay,
                   ),
@@ -135,8 +135,8 @@ class _VoiceNoteBubbleState extends State<VoiceNoteBubble> {
                     : _formatDuration(_duration),
                 style: TextStyle(
                   color: widget.isOutgoing
-                      ? AppColors.textPrimary.withValues(alpha: 0.7)
-                      : AppColors.textSecondary,
+                      ? ThemeProvider.instance.colors.textPrimary.withValues(alpha: 0.7)
+                      : ThemeProvider.instance.colors.textSecondary,
                   fontSize: 11,
                 ),
               ),

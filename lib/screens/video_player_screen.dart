@@ -50,9 +50,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
               children: [
                 const Icon(Icons.error_outline, color: AppColors.danger, size: 48),
                 const SizedBox(height: 12),
-                const Text('Failed to play video', style: TextStyle(color: AppColors.textPrimary, fontSize: 16)),
+                Text('Failed to play video', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 16)),
                 const SizedBox(height: 4),
-                Text(errorMessage, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12), textAlign: TextAlign.center),
+                Text(errorMessage, style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 12), textAlign: TextAlign.center),
               ],
             ),
           );

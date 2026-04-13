@@ -15,9 +15,9 @@ class AttachmentPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      decoration: BoxDecoration(
+        color: ThemeProvider.instance.colors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -78,7 +78,7 @@ class _AttachmentOption extends StatelessWidget {
             child: Icon(icon, color: Colors.white, size: 26),
           ),
           const SizedBox(height: 8),
-          Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          Text(label, style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 13)),
         ],
       ),
     );

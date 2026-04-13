@@ -15,23 +15,23 @@ class EmojiPickerOverlay extends StatelessWidget {
         textEditingController: controller,
         config: Config(
           height: 260,
-          emojiViewConfig: const EmojiViewConfig(
-            backgroundColor: AppColors.background,
+          emojiViewConfig: EmojiViewConfig(
+            backgroundColor: ThemeProvider.instance.colors.background,
             columns: 8,
             emojiSizeMax: 28,
           ),
-          categoryViewConfig: const CategoryViewConfig(
-            backgroundColor: AppColors.surface,
+          categoryViewConfig: CategoryViewConfig(
+            backgroundColor: ThemeProvider.instance.colors.surface,
             indicatorColor: AppColors.accent,
             iconColorSelected: AppColors.accent,
-            iconColor: AppColors.textSecondary,
+            iconColor: ThemeProvider.instance.colors.textSecondary,
           ),
-          searchViewConfig: const SearchViewConfig(
-            backgroundColor: AppColors.background,
+          searchViewConfig: SearchViewConfig(
+            backgroundColor: ThemeProvider.instance.colors.background,
             hintText: 'Search emoji...',
           ),
-          bottomActionBarConfig: const BottomActionBarConfig(
-            backgroundColor: AppColors.surface,
+          bottomActionBarConfig: BottomActionBarConfig(
+            backgroundColor: ThemeProvider.instance.colors.surface,
             buttonColor: AppColors.accent,
             buttonIconColor: Colors.white,
           ),

@@ -58,32 +58,32 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          backgroundColor: AppColors.surface,
-          title: const Text('Edit Staff', style: TextStyle(color: AppColors.textPrimary)),
+          backgroundColor: ThemeProvider.instance.colors.surface,
+          title: Text('Edit Staff', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: nameController,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Name',
-                    labelStyle: const TextStyle(color: AppColors.textSecondary),
+                    labelStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: emailController,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    labelStyle: const TextStyle(color: AppColors.textSecondary),
+                    labelStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                   ),
                 ),
@@ -91,25 +91,25 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'New Password (leave blank to keep)',
-                    labelStyle: const TextStyle(color: AppColors.textSecondary),
+                    labelStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                   ),
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   value: selectedRole,
-                  dropdownColor: AppColors.surface,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  dropdownColor: ThemeProvider.instance.colors.surface,
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Role',
-                    labelStyle: const TextStyle(color: AppColors.textSecondary),
+                    labelStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                   ),
                   items: const [
@@ -124,7 +124,7 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+              child: Text('Cancel', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.accent),
@@ -174,32 +174,32 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          backgroundColor: AppColors.surface,
-          title: const Text('Add Staff', style: TextStyle(color: AppColors.textPrimary)),
+          backgroundColor: ThemeProvider.instance.colors.surface,
+          title: Text('Add Staff', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: nameController,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Name',
-                    labelStyle: const TextStyle(color: AppColors.textSecondary),
+                    labelStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: emailController,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    labelStyle: const TextStyle(color: AppColors.textSecondary),
+                    labelStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                   ),
                 ),
@@ -207,25 +207,25 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    labelStyle: const TextStyle(color: AppColors.textSecondary),
+                    labelStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                   ),
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   value: role,
-                  dropdownColor: AppColors.surface,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  dropdownColor: ThemeProvider.instance.colors.surface,
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Role',
-                    labelStyle: const TextStyle(color: AppColors.textSecondary),
+                    labelStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                   ),
                   items: const [
@@ -240,7 +240,7 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+              child: Text('Cancel', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.accent),
@@ -284,17 +284,17 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
     final user = ref.watch(authProvider).user;
     if (user == null || !user.isAdmin) {
       return Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(backgroundColor: AppColors.headerBackground, title: const Text('Access Denied')),
-        body: const Center(child: Text('Admin access required', style: TextStyle(color: AppColors.textSecondary))),
+        backgroundColor: ThemeProvider.instance.colors.background,
+        appBar: AppBar(backgroundColor: ThemeProvider.instance.colors.headerBackground, title: Text('Access Denied')),
+        body: Center(child: Text('Admin access required', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary))),
       );
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: ThemeProvider.instance.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.headerBackground,
-        title: const Text('Staff Management', style: TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.w600)),
+        backgroundColor: ThemeProvider.instance.colors.headerBackground,
+        title: Text('Staff Management', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 18, fontWeight: FontWeight.w600)),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.accent,
@@ -310,12 +310,12 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                   ? ListView(
                       children: [
                         const SizedBox(height: 200),
-                        const Center(
+                        Center(
                           child: Column(
                             children: [
-                              Icon(Icons.people_outline, size: 64, color: AppColors.textSecondary),
-                              SizedBox(height: 16),
-                              Text('No staff members yet', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+                              Icon(Icons.people_outline, size: 64, color: ThemeProvider.instance.colors.textSecondary),
+                              const SizedBox(height: 16),
+                              Text('No staff members yet', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 16)),
                             ],
                           ),
                         ),
@@ -329,7 +329,7 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
 
                         return ListTile(
                           leading: CircleAvatar(
-                            backgroundColor: isActive ? AppColors.accent : AppColors.textSecondary,
+                            backgroundColor: isActive ? AppColors.accent : ThemeProvider.instance.colors.textSecondary,
                             child: Text(
                               (member['name'] ?? '?')[0].toUpperCase(),
                               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
@@ -338,7 +338,7 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                           title: Text(
                             member['name'] ?? '',
                             style: TextStyle(
-                              color: isActive ? AppColors.textPrimary : AppColors.textSecondary,
+                              color: isActive ? ThemeProvider.instance.colors.textPrimary : ThemeProvider.instance.colors.textSecondary,
                               fontWeight: FontWeight.w500,
                               decoration: isActive ? null : TextDecoration.lineThrough,
                             ),
@@ -348,7 +348,7 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                             children: [
                               Text(
                                 member['email'] ?? '',
-                                style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                                style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 13),
                               ),
                               const SizedBox(height: 2),
                               Container(
@@ -356,13 +356,13 @@ class _StaffManagementScreenState extends ConsumerState<StaffManagementScreen> {
                                 decoration: BoxDecoration(
                                   color: member['role'] == 'admin'
                                       ? AppColors.accent.withValues(alpha: 0.15)
-                                      : AppColors.inputBackground,
+                                      : ThemeProvider.instance.colors.inputBackground,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Text(
                                   (member['role'] ?? 'agent').toString().toUpperCase(),
                                   style: TextStyle(
-                                    color: member['role'] == 'admin' ? AppColors.accent : AppColors.textSecondary,
+                                    color: member['role'] == 'admin' ? AppColors.accent : ThemeProvider.instance.colors.textSecondary,
                                     fontSize: 10,
                                     fontWeight: FontWeight.w600,
                                   ),

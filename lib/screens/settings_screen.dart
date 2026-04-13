@@ -7,6 +7,42 @@ import '../providers/auth_provider.dart';
 import '../services/notification_service.dart';
 import '../widgets/avatar.dart';
 
+void _showThemePicker(BuildContext context) {
+  final colors = ThemeProvider.instance.colors;
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: colors.surface,
+      title: Text('Appearance', style: TextStyle(color: colors.textPrimary)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _themeOption(ctx, 'Light', AppThemeMode.light, Icons.light_mode),
+          _themeOption(ctx, 'Dark', AppThemeMode.dark, Icons.dark_mode),
+          _themeOption(ctx, 'System default', AppThemeMode.system, Icons.settings_brightness),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _themeOption(BuildContext context, String label, AppThemeMode mode, IconData icon) {
+  final isSelected = ThemeProvider.instance.mode == mode;
+  final colors = ThemeProvider.instance.colors;
+  return ListTile(
+    leading: Icon(icon, color: isSelected ? AppColors.accent : colors.textSecondary),
+    title: Text(label, style: TextStyle(
+      color: colors.textPrimary,
+      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+    )),
+    trailing: isSelected ? const Icon(Icons.check, color: AppColors.accent) : null,
+    onTap: () {
+      ThemeProvider.instance.setMode(mode);
+      Navigator.pop(context);
+    },
+  );
+}
+
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -16,9 +52,9 @@ class SettingsScreen extends ConsumerWidget {
     final user = authState.user;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: ThemeProvider.instance.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.headerBackground,
+        backgroundColor: ThemeProvider.instance.colors.headerBackground,
         title: const Text('Settings'),
       ),
       body: ListView(
@@ -37,10 +73,10 @@ class SettingsScreen extends ConsumerWidget {
                       children: [
                         Text(
                           user.name,
-                          style: AppTypography.contactName.copyWith(fontSize: 20),
+                          style: AppTypography.contactName(ThemeProvider.instance.colors).copyWith(fontSize: 20),
                         ),
                         const SizedBox(height: 4),
-                        Text(user.email, style: AppTypography.lastMessage),
+                        Text(user.email, style: AppTypography.lastMessage(ThemeProvider.instance.colors)),
                         const SizedBox(height: 2),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -63,40 +99,58 @@ class SettingsScreen extends ConsumerWidget {
                 ],
               ),
             ),
-          const Divider(color: AppColors.divider, height: 32),
+          Divider(color: ThemeProvider.instance.colors.divider, height: 32),
           SwitchListTile(
-            title: const Text('Notifications', style: TextStyle(color: AppColors.textPrimary)),
-            subtitle: const Text('Message notifications', style: TextStyle(color: AppColors.textSecondary)),
+            title: Text('Notifications', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
+            subtitle: Text('Message notifications', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary)),
             value: true,
             activeTrackColor: AppColors.accent,
             onChanged: (_) {},
-            secondary: const Icon(Icons.notifications_outlined, color: AppColors.textSecondary),
+            secondary: Icon(Icons.notifications_outlined, color: ThemeProvider.instance.colors.textSecondary),
           ),
-          const Divider(color: AppColors.divider, height: 1),
+          Divider(color: ThemeProvider.instance.colors.divider, height: 1),
           if (user?.isAdmin == true) ...[
             ListTile(
-              leading: const Icon(Icons.people_outline, color: AppColors.textSecondary),
-              title: const Text('Staff Management', style: TextStyle(color: AppColors.textPrimary)),
-              trailing: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+              leading: Icon(Icons.people_outline, color: ThemeProvider.instance.colors.textSecondary),
+              title: Text('Staff Management', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
+              trailing: Icon(Icons.chevron_right, color: ThemeProvider.instance.colors.textSecondary),
               onTap: () => context.push('/staff'),
             ),
-            const Divider(color: AppColors.divider, height: 1),
+            Divider(color: ThemeProvider.instance.colors.divider, height: 1),
           ],
-          const Divider(color: AppColors.divider, height: 32),
+          Divider(color: ThemeProvider.instance.colors.divider, height: 1),
           ListTile(
-            leading: const Icon(Icons.info_outline, color: AppColors.textSecondary),
-            title: const Text('About', style: TextStyle(color: AppColors.textPrimary)),
-            subtitle: const Text('Flow Support v1.0.0', style: TextStyle(color: AppColors.textSecondary)),
+            leading: Icon(
+              ThemeProvider.instance.isDark ? Icons.dark_mode : Icons.light_mode,
+              color: ThemeProvider.instance.colors.textSecondary,
+            ),
+            title: Text('Appearance', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
+            subtitle: Text(
+              ThemeProvider.instance.mode == AppThemeMode.system
+                  ? 'System default'
+                  : ThemeProvider.instance.mode == AppThemeMode.dark
+                      ? 'Dark'
+                      : 'Light',
+              style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 12),
+            ),
+            trailing: Icon(Icons.chevron_right, color: ThemeProvider.instance.colors.textSecondary),
+            onTap: () => _showThemePicker(context),
+          ),
+          Divider(color: ThemeProvider.instance.colors.divider, height: 32),
+          ListTile(
+            leading: Icon(Icons.info_outline, color: ThemeProvider.instance.colors.textSecondary),
+            title: Text('About', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
+            subtitle: Text('Flow Support v1.0.0', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary)),
           ),
           ListTile(
-            leading: const Icon(Icons.notifications_active, color: AppColors.textSecondary),
-            title: const Text('Push Status', style: TextStyle(color: AppColors.textPrimary)),
+            leading: Icon(Icons.notifications_active, color: ThemeProvider.instance.colors.textSecondary),
+            title: Text('Push Status', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
             subtitle: Text(
               'Firebase: ${firebaseAvailable ? "OK" : "FAILED"}\nNotif: ${NotificationService().debugStatus}',
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 12),
             ),
           ),
-          const Divider(color: AppColors.divider, height: 32),
+          Divider(color: ThemeProvider.instance.colors.divider, height: 32),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: SizedBox(

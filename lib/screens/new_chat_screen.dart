@@ -98,9 +98,9 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: ThemeProvider.instance.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.headerBackground,
+        backgroundColor: ThemeProvider.instance.colors.headerBackground,
         title: const Text('New Chat'),
       ),
       body: Column(
@@ -110,13 +110,13 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
             child: TextField(
               controller: _searchController,
               onChanged: _filterContacts,
-              style: const TextStyle(color: AppColors.textPrimary),
+              style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Search contacts',
-                hintStyle: const TextStyle(color: AppColors.textSecondary),
+                hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                 filled: true,
-                fillColor: AppColors.inputBackground,
-                prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
+                fillColor: ThemeProvider.instance.colors.inputBackground,
+                prefixIcon: Icon(Icons.search, color: ThemeProvider.instance.colors.textSecondary),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide.none,
@@ -128,18 +128,18 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               children: [
-                const Text('+234', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+                Text('+234', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 16)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: TextField(
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
-                    style: const TextStyle(color: AppColors.textPrimary),
+                    style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                     decoration: InputDecoration(
                       hintText: 'Enter phone number',
-                      hintStyle: const TextStyle(color: AppColors.textSecondary),
+                      hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                       filled: true,
-                      fillColor: AppColors.inputBackground,
+                      fillColor: ThemeProvider.instance.colors.inputBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
                         borderSide: BorderSide.none,
@@ -164,9 +164,9 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
                       // The backend handleIncomingMessage creates contacts, but for outbound
                       // we need the contact to exist first. Show a message.
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Contact not found. Contacts are created when they message first.'),
-                          backgroundColor: AppColors.headerBackground,
+                        SnackBar(
+                          content: const Text('Contact not found. Contacts are created when they message first.'),
+                          backgroundColor: ThemeProvider.instance.colors.headerBackground,
                         ),
                       );
                     }
@@ -175,7 +175,7 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
               ],
             ),
           ),
-          const Divider(color: AppColors.divider, height: 24),
+          Divider(color: ThemeProvider.instance.colors.divider, height: 24),
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator(color: AppColors.accent))
@@ -187,11 +187,11 @@ class _NewChatScreenState extends ConsumerState<NewChatScreen> {
                         leading: Avatar(name: contact.nameOrPhone, radius: 22),
                         title: Text(
                           contact.nameOrPhone,
-                          style: AppTypography.contactName,
+                          style: AppTypography.contactName(ThemeProvider.instance.colors),
                         ),
                         subtitle: Text(
                           contact.phoneNumber,
-                          style: AppTypography.lastMessage,
+                          style: AppTypography.lastMessage(ThemeProvider.instance.colors),
                         ),
                         onTap: () => _openConversationForContact(contact),
                       );

@@ -154,23 +154,23 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
         : 0;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: ThemeProvider.instance.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.headerBackground,
+        backgroundColor: ThemeProvider.instance.colors.headerBackground,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Broadcast message',
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: ThemeProvider.instance.colors.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Text(
               '${_selectedConversationIds.length} selected',
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 13),
             ),
           ],
         ),
@@ -191,25 +191,25 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
           // Message compose area
           Container(
             padding: const EdgeInsets.all(12),
-            color: AppColors.surface,
+            color: ThemeProvider.instance.colors.surface,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Message',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 12),
                 ),
                 const SizedBox(height: 6),
                 TextField(
                   controller: _messageController,
                   maxLines: 4,
                   minLines: 2,
-                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 15),
                   decoration: InputDecoration(
                     hintText: 'Type your broadcast message...',
-                    hintStyle: const TextStyle(color: AppColors.textSecondary),
+                    hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -221,7 +221,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
             ),
           ),
 
-          const Divider(color: AppColors.divider, height: 1),
+          Divider(color: ThemeProvider.instance.colors.divider, height: 1),
 
           // 24-hour window warning
           if (expiredCount > 0)
@@ -253,13 +253,13 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
             child: TextField(
               controller: _searchController,
               onChanged: (q) => setState(() => _searchQuery = q),
-              style: const TextStyle(color: AppColors.textPrimary),
+              style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Search contacts...',
-                hintStyle: const TextStyle(color: AppColors.textSecondary),
-                prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
+                hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
+                prefixIcon: Icon(Icons.search, color: ThemeProvider.instance.colors.textSecondary),
                 filled: true,
-                fillColor: AppColors.inputBackground,
+                fillColor: ThemeProvider.instance.colors.inputBackground,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide.none,
@@ -293,7 +293,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
                             decoration: BoxDecoration(
                               color: AppColors.accent,
                               shape: BoxShape.circle,
-                              border: Border.all(color: AppColors.background, width: 2),
+                              border: Border.all(color: ThemeProvider.instance.colors.background, width: 2),
                             ),
                             child: const Icon(Icons.check, color: Colors.white, size: 12),
                           ),
@@ -306,7 +306,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
                         child: Text(
                           contactName,
                           style: TextStyle(
-                            color: AppColors.textPrimary,
+                            color: ThemeProvider.instance.colors.textPrimary,
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -325,11 +325,11 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
                         )
                       : Text(
                           convo.contact.phoneNumber,
-                          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                          style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 12),
                         ),
                   trailing: isSelected
                       ? const Icon(Icons.check_circle, color: AppColors.accent, size: 24)
-                      : const Icon(Icons.circle_outlined, color: AppColors.textSecondary, size: 24),
+                      : Icon(Icons.circle_outlined, color: ThemeProvider.instance.colors.textSecondary, size: 24),
                   onTap: () => _toggleSelection(convo.id),
                 );
               },
@@ -341,7 +341,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
             Container(
               height: 50,
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              color: AppColors.surface,
+              color: ThemeProvider.instance.colors.surface,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: _selectedConversationIds.map((id) {
@@ -351,9 +351,9 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                     child: Chip(
-                      label: Text(name, style: const TextStyle(color: AppColors.textPrimary, fontSize: 12)),
-                      backgroundColor: AppColors.inputBackground,
-                      deleteIcon: const Icon(Icons.close, size: 16, color: AppColors.textSecondary),
+                      label: Text(name, style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 12)),
+                      backgroundColor: ThemeProvider.instance.colors.inputBackground,
+                      deleteIcon: Icon(Icons.close, size: 16, color: ThemeProvider.instance.colors.textSecondary),
                       onDeleted: () => _toggleSelection(id),
                       side: BorderSide.none,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -366,7 +366,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
           // Send button
           Container(
             padding: const EdgeInsets.all(12),
-            color: AppColors.surface,
+            color: ThemeProvider.instance.colors.surface,
             child: SizedBox(
               width: double.infinity,
               height: 48,

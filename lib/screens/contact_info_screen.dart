@@ -95,13 +95,13 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
         controller: controller,
         maxLines: maxLines,
         keyboardType: keyboardType,
-        style: const TextStyle(color: AppColors.textPrimary),
+        style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: AppColors.textSecondary),
-          prefixIcon: icon != null ? Icon(icon, color: AppColors.textSecondary) : null,
+          labelStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
+          prefixIcon: icon != null ? Icon(icon, color: ThemeProvider.instance.colors.textSecondary) : null,
           filled: true,
-          fillColor: AppColors.inputBackground,
+          fillColor: ThemeProvider.instance.colors.inputBackground,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
@@ -119,7 +119,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
     if (conversation == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: Text('Conversation not found', style: TextStyle(color: AppColors.textSecondary))),
+        body: Center(child: Text('Conversation not found', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary))),
       );
     }
 
@@ -136,9 +136,9 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: ThemeProvider.instance.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.headerBackground,
+        backgroundColor: ThemeProvider.instance.colors.headerBackground,
         title: const Text('Contact Info'),
         actions: [
           _saving
@@ -166,7 +166,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
             Center(
               child: Text(
                 contact.phoneNumber,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 16),
+                style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 16),
               ),
             ),
             const SizedBox(height: 24),
@@ -176,15 +176,15 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
             _buildField(_notesController, 'Notes', icon: Icons.note_outlined, maxLines: 3),
 
             // Tags
-            const Text('Tags', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+            Text('Tags', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 14)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               runSpacing: 4,
               children: _tags.map((tag) => Chip(
-                label: Text(tag, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13)),
+                label: Text(tag, style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 13)),
                 backgroundColor: AppColors.accent.withValues(alpha: 0.2),
-                deleteIconColor: AppColors.textSecondary,
+                deleteIconColor: ThemeProvider.instance.colors.textSecondary,
                 onDeleted: () => _removeTag(tag),
               )).toList(),
             ),
@@ -194,13 +194,13 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
                 Expanded(
                   child: TextField(
                     controller: _tagController,
-                    style: const TextStyle(color: AppColors.textPrimary),
+                    style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                     onSubmitted: (_) => _addTag(),
                     decoration: InputDecoration(
                       hintText: 'Add tag (e.g. VIP, Customer)',
-                      hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                      hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 13),
                       filled: true,
-                      fillColor: AppColors.inputBackground,
+                      fillColor: ThemeProvider.instance.colors.inputBackground,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
@@ -241,8 +241,8 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
                 icon: const Icon(Icons.archive_outlined),
                 label: const Text('Archive Chat'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.textSecondary,
-                  side: const BorderSide(color: AppColors.divider),
+                  foregroundColor: ThemeProvider.instance.colors.textSecondary,
+                  side: BorderSide(color: ThemeProvider.instance.colors.divider),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: () async {
@@ -300,7 +300,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
             backgroundColor: AppColors.danger,
             action: SnackBarAction(
               label: 'Open Settings',
-              textColor: AppColors.textPrimary,
+              textColor: ThemeProvider.instance.colors.textPrimary,
               onPressed: () => openAppSettings(),
             ),
           ),
@@ -353,7 +353,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
     return await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surface,
+        backgroundColor: ThemeProvider.instance.colors.surface,
         title: Text(title),
         content: Text(content),
         actions: [

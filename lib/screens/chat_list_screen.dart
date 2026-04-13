@@ -99,7 +99,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
   void _showConversationActions(Conversation conversation) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: ThemeProvider.instance.colors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -115,7 +115,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
               ),
               title: Text(
                 conversation.isStarred ? 'Unstar' : 'Star',
-                style: const TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
               ),
               onTap: () {
                 Navigator.pop(ctx);
@@ -125,7 +125,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
             if (conversation.unreadCount == 0)
               ListTile(
                 leading: const Icon(Icons.markunread, color: AppColors.accent),
-                title: const Text('Mark as unread', style: TextStyle(color: AppColors.textPrimary)),
+                title: Text('Mark as unread', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
                 onTap: () async {
                   Navigator.pop(ctx);
                   try {
@@ -135,8 +135,8 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                 },
               ),
             ListTile(
-              leading: const Icon(Icons.checklist, color: AppColors.textSecondary),
-              title: const Text('Select', style: TextStyle(color: AppColors.textPrimary)),
+              leading: Icon(Icons.checklist, color: ThemeProvider.instance.colors.textSecondary),
+              title: Text('Select', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 setState(() {
@@ -173,12 +173,12 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
           : _isSelectionMode
               ? AppBar(
                   leading: IconButton(
-                    icon: const Icon(Icons.close, color: AppColors.textPrimary),
+                    icon: Icon(Icons.close, color: ThemeProvider.instance.colors.textPrimary),
                     onPressed: _exitSelectionMode,
                   ),
                   title: Text(
                     '${_selectedConversations.length} selected',
-                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 18),
+                    style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 18),
                   ),
                   actions: [
                     IconButton(
@@ -201,7 +201,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                   title: const Text('Flow Support'),
                   actions: [
                     IconButton(
-                      icon: const Icon(Icons.campaign_outlined, color: AppColors.textSecondary),
+                      icon: Icon(Icons.campaign_outlined, color: ThemeProvider.instance.colors.textSecondary),
                       tooltip: 'Broadcast message',
                       onPressed: () {
                         Navigator.push(
@@ -216,7 +216,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                     ),
                     PopupMenuButton<String>(
                       icon: const Icon(Icons.more_vert),
-                      color: AppColors.surface,
+                      color: ThemeProvider.instance.colors.surface,
                       onSelected: (value) {
                         if (value == 'staff') context.push('/staff');
                       },
@@ -270,9 +270,9 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Text(
+                            Text(
                               'Failed to load conversations',
-                              style: TextStyle(color: AppColors.textSecondary),
+                              style: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                             ),
                             const SizedBox(height: 8),
                             TextButton(
@@ -294,7 +294,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                                       _activeFilter == ConversationFilter.all
                                           ? 'No conversations'
                                           : 'No ${_activeFilter.name} conversations',
-                                      style: const TextStyle(color: AppColors.textSecondary),
+                                      style: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                                     ),
                                   ),
                                 ],
@@ -314,7 +314,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
                                       alignment: Alignment.centerRight,
                                       padding: const EdgeInsets.only(right: 24),
                                       color: conv.isStarred
-                                          ? AppColors.textSecondary
+                                          ? ThemeProvider.instance.colors.textSecondary
                                           : const Color(0xFFF5C543),
                                       child: Icon(
                                         conv.isStarred ? Icons.star_border : Icons.star,
@@ -362,7 +362,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.accent : AppColors.inputBackground,
+          color: isActive ? AppColors.accent : ThemeProvider.instance.colors.inputBackground,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -376,7 +376,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
             Text(
               count != null && count > 0 ? '$label ($count)' : label,
               style: TextStyle(
-                color: isActive ? Colors.white : AppColors.textSecondary,
+                color: isActive ? Colors.white : ThemeProvider.instance.colors.textSecondary,
                 fontSize: 13,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
               ),

@@ -47,12 +47,12 @@ class _LinkPreviewBubbleState extends State<LinkPreviewBubble> {
           color: Colors.black.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 1.5, color: AppColors.textSecondary)),
+            SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 1.5, color: ThemeProvider.instance.colors.textSecondary)),
             SizedBox(width: 8),
-            Text('Loading preview...', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+            Text('Loading preview...', style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 12)),
           ],
         ),
       );
@@ -95,7 +95,7 @@ class _LinkPreviewBubbleState extends State<LinkPreviewBubble> {
                   if (_metadata!.title != null)
                     Text(
                       _metadata!.title!,
-                      style: const TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.w600),
+                      style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 13, fontWeight: FontWeight.w600),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -103,7 +103,7 @@ class _LinkPreviewBubbleState extends State<LinkPreviewBubble> {
                     const SizedBox(height: 2),
                     Text(
                       _metadata!.desc!,
-                      style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                      style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 12),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -111,7 +111,7 @@ class _LinkPreviewBubbleState extends State<LinkPreviewBubble> {
                   const SizedBox(height: 2),
                   Text(
                     Uri.parse(LinkDetector.ensureProtocol(widget.url)).host,
-                    style: TextStyle(color: AppColors.textSecondary.withValues(alpha: 0.7), fontSize: 11),
+                    style: TextStyle(color: ThemeProvider.instance.colors.textSecondary.withValues(alpha: 0.7), fontSize: 11),
                   ),
                 ],
               ),

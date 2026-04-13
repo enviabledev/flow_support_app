@@ -255,7 +255,7 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
           // Caption input + send button
           SafeArea(
             child: Container(
-              color: AppColors.background,
+              color: ThemeProvider.instance.colors.background,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
                 children: [
@@ -264,12 +264,12 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
                       controller: _captionControllers[_currentIndex],
                       maxLines: 4,
                       minLines: 1,
-                      style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+                      style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 15),
                       decoration: InputDecoration(
                         hintText: 'Add a caption...',
-                        hintStyle: const TextStyle(color: AppColors.textSecondary),
+                        hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                         filled: true,
-                        fillColor: AppColors.inputBackground,
+                        fillColor: ThemeProvider.instance.colors.inputBackground,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
                           borderSide: BorderSide.none,
@@ -318,7 +318,7 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: ThemeProvider.instance.colors.surface,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Icon(Icons.videocam, size: 56, color: AppColors.accent),
@@ -353,7 +353,7 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: ThemeProvider.instance.colors.surface,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Icon(_fileIcon(file.path), size: 56, color: AppColors.accent),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'config/theme.dart';
 import 'providers/auth_provider.dart';
+// ThemeProvider, buildAppTheme imported via config/theme.dart
 import 'providers/conversations_provider.dart';
 import 'router/app_router.dart';
 import 'services/notification_service.dart';
@@ -61,11 +62,17 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Flow Support',
-      debugShowCheckedModeBanner: false,
-      theme: appTheme(),
-      routerConfig: router,
+    return ListenableBuilder(
+      listenable: ThemeProvider.instance,
+      builder: (context, _) {
+        final tp = ThemeProvider.instance;
+        return MaterialApp.router(
+          title: 'Flow Support',
+          debugShowCheckedModeBanner: false,
+          theme: buildAppTheme(tp.isDark, tp.colors),
+          routerConfig: router,
+        );
+      },
     );
   }
 }

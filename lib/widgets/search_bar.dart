@@ -17,7 +17,7 @@ class ChatSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
     return Container(
-      color: AppColors.headerBackground,
+      color: ThemeProvider.instance.colors.headerBackground,
       padding: EdgeInsets.only(
         top: topPadding + 8,
         left: 8,
@@ -27,7 +27,7 @@ class ChatSearchBar extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.textSecondary),
+            icon: Icon(Icons.arrow_back, color: ThemeProvider.instance.colors.textSecondary),
             onPressed: onClose,
           ),
           Expanded(
@@ -35,12 +35,12 @@ class ChatSearchBar extends StatelessWidget {
               controller: controller,
               onChanged: onChanged,
               autofocus: true,
-              style: const TextStyle(color: AppColors.textPrimary),
+              style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Search...',
-                hintStyle: const TextStyle(color: AppColors.textSecondary),
+                hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                 filled: true,
-                fillColor: AppColors.inputBackground,
+                fillColor: ThemeProvider.instance.colors.inputBackground,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide.none,

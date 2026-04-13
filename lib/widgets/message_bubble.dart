@@ -79,17 +79,17 @@ class MessageBubble extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        title: const Row(
+        backgroundColor: ThemeProvider.instance.colors.surface,
+        title: Row(
           children: [
-            Icon(Icons.error, color: AppColors.danger, size: 24),
-            SizedBox(width: 8),
-            Text('Not delivered', style: TextStyle(color: AppColors.textPrimary, fontSize: 18)),
+            const Icon(Icons.error, color: AppColors.danger, size: 24),
+            const SizedBox(width: 8),
+            Text('Not delivered', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 18)),
           ],
         ),
-        content: const Text(
+        content: Text(
           'Message not delivered. The customer\'s 24-hour messaging window may have expired. Ask them to send you a message first, then resend.',
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+          style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 14),
         ),
         actions: [
           TextButton(
@@ -132,7 +132,7 @@ class MessageBubble extends StatelessWidget {
                   ? const EdgeInsets.all(3)
                   : const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: isOutgoing ? AppColors.outgoingBubble : AppColors.incomingBubble,
+                color: isOutgoing ? ThemeProvider.instance.colors.outgoingBubble : ThemeProvider.instance.colors.incomingBubble,
                 borderRadius: borderRadius,
               ),
               child: Column(
@@ -170,7 +170,7 @@ class MessageBubble extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(TimeFormatter.formatMessageTime(message.createdAt), style: AppTypography.timestamp),
+                          Text(TimeFormatter.formatMessageTime(message.createdAt), style: AppTypography.timestamp(ThemeProvider.instance.colors)),
                           if (isOutgoing) ...[
                             const SizedBox(width: 4),
                             DeliveryTicks(
@@ -247,7 +247,7 @@ class MessageBubble extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichMessageText(text: body, style: AppTypography.chatMessage),
+        RichMessageText(text: body, style: AppTypography.chatMessage(ThemeProvider.instance.colors)),
         if (urls.isNotEmpty)
           LinkPreviewBubble(url: urls.first, isOutgoing: message.isOutgoing),
       ],
@@ -255,7 +255,7 @@ class MessageBubble extends StatelessWidget {
   }
 
   Widget _buildRichText(String text) {
-    return RichMessageText(text: text, style: AppTypography.chatMessage);
+    return RichMessageText(text: text, style: AppTypography.chatMessage(ThemeProvider.instance.colors));
   }
 
   /// Strip all quote formatting when we already have a database-linked reply bubble.
@@ -330,8 +330,8 @@ class MessageBubble extends StatelessWidget {
         children: [
           Text(
             '"$quotedText"',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: ThemeProvider.instance.colors.textSecondary,
               fontSize: 13,
               fontStyle: FontStyle.italic,
             ),
@@ -344,7 +344,7 @@ class MessageBubble extends StatelessWidget {
               child: Text(
                 '— $timestamp',
                 style: TextStyle(
-                  color: AppColors.textSecondary.withValues(alpha: 0.7),
+                  color: ThemeProvider.instance.colors.textSecondary.withValues(alpha: 0.7),
                   fontSize: 11,
                   fontStyle: FontStyle.italic,
                 ),
@@ -382,7 +382,7 @@ class MessageBubble extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               message.replyBody!,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 13),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -395,7 +395,7 @@ class MessageBubble extends StatelessWidget {
   void _showMessageActions(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: ThemeProvider.instance.colors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -406,8 +406,8 @@ class MessageBubble extends StatelessWidget {
             const SizedBox(height: 8),
             if (message.body != null && message.body!.isNotEmpty)
               ListTile(
-                leading: const Icon(Icons.copy, color: AppColors.textSecondary),
-                title: const Text('Copy', style: TextStyle(color: AppColors.textPrimary)),
+                leading: Icon(Icons.copy, color: ThemeProvider.instance.colors.textSecondary),
+                title: Text('Copy', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
                 onTap: () {
                   Clipboard.setData(ClipboardData(text: message.body!));
                   Navigator.pop(ctx);
@@ -417,16 +417,16 @@ class MessageBubble extends StatelessWidget {
                 },
               ),
             ListTile(
-              leading: const Icon(Icons.reply, color: AppColors.textSecondary),
-              title: const Text('Reply', style: TextStyle(color: AppColors.textPrimary)),
+              leading: Icon(Icons.reply, color: ThemeProvider.instance.colors.textSecondary),
+              title: Text('Reply', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 onReply?.call(message);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.forward, color: AppColors.textSecondary),
-              title: const Text('Forward', style: TextStyle(color: AppColors.textPrimary)),
+              leading: Icon(Icons.forward, color: ThemeProvider.instance.colors.textSecondary),
+              title: Text('Forward', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
                 onForward?.call(message);
@@ -435,7 +435,7 @@ class MessageBubble extends StatelessWidget {
             // Share — works for all message types
             ListTile(
               leading: const Icon(Icons.share, color: AppColors.accent),
-              title: const Text('Share', style: TextStyle(color: AppColors.textPrimary)),
+              title: Text('Share', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
               onTap: () async {
                 Navigator.pop(ctx);
                 if (message.hasMedia) {
@@ -455,8 +455,8 @@ class MessageBubble extends StatelessWidget {
             if (message.hasMedia) ...[
               if (_isImage)
                 ListTile(
-                  leading: const Icon(Icons.save_alt, color: AppColors.textSecondary),
-                  title: const Text('Save to Gallery', style: TextStyle(color: AppColors.textPrimary)),
+                  leading: Icon(Icons.save_alt, color: ThemeProvider.instance.colors.textSecondary),
+                  title: Text('Save to Gallery', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
                   onTap: () async {
                     Navigator.pop(ctx);
                     final success = await MediaDownloadService().saveImageToGallery(message.mediaUrl!);
@@ -470,8 +470,8 @@ class MessageBubble extends StatelessWidget {
                 ),
               if (_isVideo)
                 ListTile(
-                  leading: const Icon(Icons.save_alt, color: AppColors.textSecondary),
-                  title: const Text('Save Video', style: TextStyle(color: AppColors.textPrimary)),
+                  leading: Icon(Icons.save_alt, color: ThemeProvider.instance.colors.textSecondary),
+                  title: Text('Save Video', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
                   onTap: () async {
                     Navigator.pop(ctx);
                     final success = await MediaDownloadService().saveVideoToGallery(message.mediaUrl!);
@@ -485,8 +485,8 @@ class MessageBubble extends StatelessWidget {
                 ),
               if (_isAudio || _isDocument)
                 ListTile(
-                  leading: const Icon(Icons.file_download, color: AppColors.textSecondary),
-                  title: const Text('Save to Downloads', style: TextStyle(color: AppColors.textPrimary)),
+                  leading: Icon(Icons.file_download, color: ThemeProvider.instance.colors.textSecondary),
+                  title: Text('Save to Downloads', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
                   onTap: () async {
                     Navigator.pop(ctx);
                     final filename = Uri.tryParse(message.mediaUrl ?? '')?.pathSegments.lastOrNull ?? 'file';
@@ -501,8 +501,8 @@ class MessageBubble extends StatelessWidget {
                 ),
               if (_isDocument)
                 ListTile(
-                  leading: const Icon(Icons.open_in_new, color: AppColors.textSecondary),
-                  title: const Text('Open with...', style: TextStyle(color: AppColors.textPrimary)),
+                  leading: Icon(Icons.open_in_new, color: ThemeProvider.instance.colors.textSecondary),
+                  title: Text('Open with...', style: TextStyle(color: ThemeProvider.instance.colors.textPrimary)),
                   onTap: () async {
                     Navigator.pop(ctx);
                     final filename = Uri.tryParse(message.mediaUrl ?? '')?.pathSegments.lastOrNull ?? 'file';
@@ -542,9 +542,9 @@ class MessageBubble extends StatelessWidget {
             height: 200,
             child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent)),
           ),
-          errorWidget: (_, __, ___) => const SizedBox(
+          errorWidget: (_, __, ___) => SizedBox(
             height: 200,
-            child: Center(child: Icon(Icons.broken_image, color: AppColors.textSecondary, size: 48)),
+            child: Center(child: Icon(Icons.broken_image, color: ThemeProvider.instance.colors.textSecondary, size: 48)),
           ),
         ),
       ),
@@ -623,7 +623,7 @@ class MessageBubble extends StatelessWidget {
             const SizedBox(width: 12),
             Text('Opening $filename...'),
           ]),
-          backgroundColor: AppColors.headerBackground,
+          backgroundColor: ThemeProvider.instance.colors.headerBackground,
           duration: const Duration(seconds: 5),
         ));
         final success = await MediaDownloadService().openInExternalApp(message.mediaUrl!, filename);
@@ -638,7 +638,7 @@ class MessageBubble extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: AppColors.background.withValues(alpha: 0.3),
+          color: ThemeProvider.instance.colors.background.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -657,14 +657,14 @@ class MessageBubble extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(filename, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w500, fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Text(filename, style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontWeight: FontWeight.w500, fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis),
                   const SizedBox(height: 2),
-                  Text(_docTypeLabel(ext), style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  Text(_docTypeLabel(ext), style: TextStyle(color: ThemeProvider.instance.colors.textSecondary, fontSize: 12)),
                 ],
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.open_in_new, color: AppColors.textSecondary, size: 20),
+            Icon(Icons.open_in_new, color: ThemeProvider.instance.colors.textSecondary, size: 20),
           ],
         ),
       ),
@@ -689,7 +689,7 @@ class MessageBubble extends StatelessWidget {
       case 'doc': case 'docx': return const Color(0xFF378ADD);
       case 'xls': case 'xlsx': case 'csv': return const Color(0xFF1D9E75);
       case 'ppt': case 'pptx': return const Color(0xFFD85A30);
-      default: return AppColors.textSecondary;
+      default: return ThemeProvider.instance.colors.textSecondary;
     }
   }
 

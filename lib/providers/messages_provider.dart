@@ -210,14 +210,16 @@ class MessagesNotifier extends StateNotifier<MessagesState> {
       );
       replaceOptimisticMessage(tempId, realMessage);
     } catch (e) {
-      // Remove the optimistic message entirely for window expiry (not a real send attempt)
+      // Mark as undelivered for window expiry so the agent sees what happened
       if (e is DioException &&
           e.response?.statusCode == 400 &&
           e.response?.data is Map &&
           e.response?.data['windowExpired'] == true) {
-        state = state.copyWith(
-          messages: state.messages.where((m) => m.id != tempId).toList(),
-        );
+        final updated = state.messages.map((m) {
+          if (m.id == tempId) return m.copyWith(status: 'undelivered');
+          return m;
+        }).toList();
+        state = state.copyWith(messages: updated);
         rethrow;
       }
       markMessageFailed(tempId);

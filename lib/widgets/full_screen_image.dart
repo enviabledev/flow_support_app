@@ -58,8 +58,8 @@ class FullScreenImage extends StatelessWidget {
                   placeholder: (_, __) => const Center(
                     child: CircularProgressIndicator(color: AppColors.accent),
                   ),
-                  errorWidget: (_, __, ___) => const Center(
-                    child: Icon(Icons.broken_image, color: AppColors.textSecondary, size: 64),
+                  errorWidget: (_, __, ___) => Center(
+                    child: Icon(Icons.broken_image, color: ThemeProvider.instance.colors.textSecondary, size: 64),
                   ),
                 ),
               ),

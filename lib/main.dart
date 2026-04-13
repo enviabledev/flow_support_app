@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'app.dart';
+import 'config/theme.dart';
 
 /// Whether Firebase was successfully initialized
 bool firebaseAvailable = false;
@@ -58,5 +59,6 @@ void main() async {
     debugPrint('Firebase init failed (push notifications disabled): $e');
   }
 
+  await ThemeProvider.instance.initialize();
   runApp(const ProviderScope(child: App()));
 }

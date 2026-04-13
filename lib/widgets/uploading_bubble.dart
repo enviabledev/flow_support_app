@@ -19,7 +19,7 @@ class UploadingBubble extends StatelessWidget {
         constraints: BoxConstraints(maxWidth: screenWidth * 0.75),
         margin: const EdgeInsets.only(left: 60, right: 16, top: 4, bottom: 4),
         decoration: BoxDecoration(
-          color: AppColors.outgoingBubble,
+          color: ThemeProvider.instance.colors.outgoingBubble,
           borderRadius: BorderRadius.circular(12),
         ),
         clipBehavior: Clip.hardEdge,
@@ -42,8 +42,8 @@ class UploadingBubble extends StatelessWidget {
                       errorBuilder: (_, __, ___) => Container(
                         width: double.infinity,
                         height: 200,
-                        color: AppColors.surface,
-                        child: const Icon(Icons.broken_image, color: AppColors.textSecondary, size: 48),
+                        color: ThemeProvider.instance.colors.surface,
+                        child: Icon(Icons.broken_image, color: ThemeProvider.instance.colors.textSecondary, size: 48),
                       ),
                     ),
                   )
@@ -51,19 +51,19 @@ class UploadingBubble extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     height: 80,
-                    color: AppColors.surface.withValues(alpha: 0.5),
+                    color: ThemeProvider.instance.colors.surface.withValues(alpha: 0.5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           upload.isVideo ? Icons.videocam : Icons.insert_drive_file,
-                          color: AppColors.textPrimary, size: 28,
+                          color: ThemeProvider.instance.colors.textPrimary, size: 28,
                         ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
                             upload.localFile.path.split('/').last,
-                            style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
+                            style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 13),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -147,7 +147,7 @@ class UploadingBubble extends StatelessWidget {
             if (upload.caption != null && upload.caption!.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                child: Text(upload.caption!, style: AppTypography.chatMessage),
+                child: Text(upload.caption!, style: AppTypography.chatMessage(ThemeProvider.instance.colors)),
               ),
 
             // Timestamp
@@ -158,7 +158,7 @@ class UploadingBubble extends StatelessWidget {
                 children: [
                   Text(
                     '${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}',
-                    style: AppTypography.timestamp,
+                    style: AppTypography.timestamp(ThemeProvider.instance.colors),
                   ),
                   const SizedBox(width: 4),
                   const Icon(Icons.access_time, size: 14, color: AppColors.tickGrey),

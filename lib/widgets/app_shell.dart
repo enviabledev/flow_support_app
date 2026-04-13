@@ -19,9 +19,9 @@ class AppShell extends StatelessWidget {
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex(context),
-        backgroundColor: AppColors.surface,
+        backgroundColor: ThemeProvider.instance.colors.surface,
         selectedItemColor: AppColors.accent,
-        unselectedItemColor: AppColors.textSecondary,
+        unselectedItemColor: ThemeProvider.instance.colors.textSecondary,
         onTap: (index) {
           switch (index) {
             case 0:

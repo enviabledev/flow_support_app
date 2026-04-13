@@ -73,7 +73,7 @@ class ChatListItem extends StatelessWidget {
                         height: 24,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.textSecondary, width: 2),
+                          border: Border.all(color: ThemeProvider.instance.colors.textSecondary, width: 2),
                         ),
                       ),
               ),
@@ -91,7 +91,7 @@ class ChatListItem extends StatelessWidget {
                       Expanded(
                         child: Text(
                           contact.nameOrPhone,
-                          style: AppTypography.contactName,
+                          style: AppTypography.contactName(ThemeProvider.instance.colors),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -102,8 +102,8 @@ class ChatListItem extends StatelessWidget {
                         ),
                       Text(
                         _formatTime(conversation.lastMessageAt),
-                        style: AppTypography.timestamp.copyWith(
-                          color: hasUnread ? AppColors.accent : AppColors.textSecondary,
+                        style: AppTypography.timestamp(ThemeProvider.instance.colors).copyWith(
+                          color: hasUnread ? AppColors.accent : ThemeProvider.instance.colors.textSecondary,
                         ),
                       ),
                     ],
@@ -120,7 +120,7 @@ class ChatListItem extends StatelessWidget {
                         child: isTyping
                             ? Text(
                                 'typing...',
-                                style: AppTypography.lastMessage.copyWith(
+                                style: AppTypography.lastMessage(ThemeProvider.instance.colors).copyWith(
                                   color: AppColors.accent,
                                   fontStyle: FontStyle.italic,
                                 ),
@@ -137,7 +137,7 @@ class ChatListItem extends StatelessWidget {
                                   const SizedBox(width: 6),
                                   Text(
                                     'Uploading media...',
-                                    style: AppTypography.lastMessage.copyWith(color: AppColors.accent),
+                                    style: AppTypography.lastMessage(ThemeProvider.instance.colors).copyWith(color: AppColors.accent),
                                   ),
                                 ],
                               )
@@ -145,7 +145,7 @@ class ChatListItem extends StatelessWidget {
                                 conversation.isLastMessageOutgoing
                                     ? '${conversation.lastMessageSenderName ?? "You"}: ${_cleanPreview(conversation.lastMessageText ?? '')}'
                                     : _cleanPreview(conversation.lastMessageText ?? ''),
-                                style: AppTypography.lastMessage,
+                                style: AppTypography.lastMessage(ThemeProvider.instance.colors),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),

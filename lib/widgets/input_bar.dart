@@ -86,7 +86,7 @@ class _InputBarState extends State<InputBar> {
     return SafeArea(
       top: false,
       child: Container(
-        color: AppColors.background,
+        color: ThemeProvider.instance.colors.background,
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         child: _isRecording ? _buildRecordingBar() : _buildNormalBar(),
       ),
@@ -103,7 +103,7 @@ class _InputBarState extends State<InputBar> {
         const SizedBox(width: 8),
         Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.danger, shape: BoxShape.circle)),
         const SizedBox(width: 8),
-        Text(_formatDuration(_recordDuration), style: const TextStyle(color: AppColors.textPrimary, fontSize: 16)),
+        Text(_formatDuration(_recordDuration), style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 16)),
         const Spacer(),
         GestureDetector(
           onTap: () => _stopRecording(send: true),
@@ -123,7 +123,7 @@ class _InputBarState extends State<InputBar> {
       children: [
         // Attachment button (+)
         IconButton(
-          icon: const Icon(Icons.add, color: AppColors.textSecondary, size: 26),
+          icon: Icon(Icons.add, color: ThemeProvider.instance.colors.textSecondary, size: 26),
           onPressed: widget.onAttachment,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
@@ -132,7 +132,7 @@ class _InputBarState extends State<InputBar> {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.inputBackground,
+              color: ThemeProvider.instance.colors.inputBackground,
               borderRadius: BorderRadius.circular(25),
             ),
             child: Row(
@@ -141,7 +141,7 @@ class _InputBarState extends State<InputBar> {
                 IconButton(
                   icon: Icon(
                     widget.showEmojiPicker ? Icons.keyboard : Icons.emoji_emotions_outlined,
-                    color: AppColors.textSecondary, size: 24,
+                    color: ThemeProvider.instance.colors.textSecondary, size: 24,
                   ),
                   onPressed: widget.onEmojiToggle,
                   padding: const EdgeInsets.all(8),
@@ -153,10 +153,10 @@ class _InputBarState extends State<InputBar> {
                     onChanged: widget.onTextChanged,
                     maxLines: 5,
                     minLines: 1,
-                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 16),
-                    decoration: const InputDecoration(
+                    style: TextStyle(color: ThemeProvider.instance.colors.textPrimary, fontSize: 16),
+                    decoration: InputDecoration(
                       hintText: 'Type a message',
-                      hintStyle: TextStyle(color: AppColors.textSecondary),
+                      hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
                     ),
@@ -169,7 +169,7 @@ class _InputBarState extends State<InputBar> {
         const SizedBox(width: 4),
         // Camera button
         IconButton(
-          icon: const Icon(Icons.camera_alt, color: AppColors.textSecondary, size: 24),
+          icon: Icon(Icons.camera_alt, color: ThemeProvider.instance.colors.textSecondary, size: 24),
           onPressed: widget.onCamera,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 40, minHeight: 40),

@@ -43,7 +43,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: ThemeProvider.instance.colors.background,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -69,28 +69,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Staff Messaging Portal',
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppColors.textSecondary,
+                    color: ThemeProvider.instance.colors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 48),
                 TextField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   decoration: InputDecoration(
                     hintText: 'Email',
-                    hintStyle: const TextStyle(color: AppColors.textSecondary),
+                    hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
-                    prefixIcon: const Icon(Icons.email_outlined, color: AppColors.textSecondary),
+                    prefixIcon: Icon(Icons.email_outlined, color: ThemeProvider.instance.colors.textSecondary),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
@@ -98,22 +98,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 TextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(color: ThemeProvider.instance.colors.textPrimary),
                   onSubmitted: (_) => _login(),
                   decoration: InputDecoration(
                     hintText: 'Password',
-                    hintStyle: const TextStyle(color: AppColors.textSecondary),
+                    hintStyle: TextStyle(color: ThemeProvider.instance.colors.textSecondary),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: ThemeProvider.instance.colors.inputBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
-                    prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.textSecondary),
+                    prefixIcon: Icon(Icons.lock_outlined, color: ThemeProvider.instance.colors.textSecondary),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                        color: AppColors.textSecondary,
+                        color: ThemeProvider.instance.colors.textSecondary,
                       ),
                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
